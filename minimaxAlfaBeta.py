@@ -12,14 +12,7 @@ class Minimax():
         self.alpha = -1e15
         self.beta = 1e15
         
-        print(f"\n[MINIMAX INIT] Iniciando búsqueda con profundidad (depth) = {self.depth}")
-        
-        valid_cols = self.validColumns(self.currentBoard)
-        print(f"[MINIMAX INIT] Columnas válidas en el tablero actual: {valid_cols}")
-        
         self.bestEval, self.bestColumn = self.algorithm(self.currentBoard, self.depth, self.alpha, self.beta, True)
-        
-        print(f"[MINIMAX RESULT] Mejor evaluación obtenida: {self.bestEval} | Columna elegida: {self.bestColumn}\n")
         
     def validColumns(self, board):
         valid = []
@@ -31,12 +24,8 @@ class Minimax():
     def algorithm(self, board, depth, alpha, beta, maxi):
         validColumnsList = self.validColumns(board)
         
-        indent = "  " * (self.depth - depth)
-        print(f"{indent}[ALGORITHM] Profundidad: {depth} | Turno Maximizing (Computadora): {maxi} | Columnas válidas: {validColumnsList}")
-        
         if depth == 0 or not validColumnsList:
             eval_score = self.evalBoard(board)
-            print(f"{indent}[BASE CASE] Fin de rama (Profundidad 0 o sin columnas). Evaluación del tablero: {eval_score}")
             return eval_score, None
         
         if maxi:
@@ -45,10 +34,8 @@ class Minimax():
             
             for col in validColumnsList:
                 tempBoard = self.simMove(board, col, 2)
-                print(f"{indent}[MAXI] Computadora simula colocar ficha en columna {col} (Profundidad {depth})")
                 
                 tempEval, _ = self.algorithm(tempBoard, depth - 1, alpha, beta, False)
-                print(f"{indent}[BRANCH EVAL] Rama [Computadora -> Columna {col}] obtuvo evaluación: {tempEval}")
                 
                 if tempEval >= maxEval:
                     maxEval = tempEval
@@ -56,10 +43,8 @@ class Minimax():
                 
                 alpha = max(alpha, tempEval)
                 if beta <= alpha:
-                    print(f"{indent}[MAXI PRUNE] Poda Alfa-Beta activada (beta: {beta} <= alpha: {alpha})")
                     break
             
-            print(f"{indent}[MAXI RESULT] Mejor evaluación de esta rama MAXI: {maxEval} eligiendo columna {bestColumn}")
             return maxEval, bestColumn
         
         else:
@@ -68,10 +53,8 @@ class Minimax():
             
             for col in validColumnsList:
                 tempBoard = self.simMove(board, col, 1)
-                print(f"{indent}[MINI] Humano simula colocar ficha en columna {col} (Profundidad {depth})")
                 
                 tempEval, _ = self.algorithm(tempBoard, depth - 1, alpha, beta, True)
-                print(f"{indent}[BRANCH EVAL] Rama [Humano -> Columna {col}] obtuvo evaluación: {tempEval}")
                 
                 if tempEval <= minEval:
                     minEval = tempEval
@@ -79,10 +62,8 @@ class Minimax():
                 
                 beta = min(beta, tempEval)
                 if beta <= alpha:
-                    print(f"{indent}[MINI PRUNE] Poda Alfa-Beta activada (beta: {beta} <= alpha: {alpha})")
                     break
             
-            print(f"{indent}[MINI RESULT] Mejor evaluación de esta rama MINI: {minEval} eligiendo columna {bestColumn}")
             return minEval, bestColumn
     
     def simMove(self, board, col, player):
